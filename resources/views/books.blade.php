@@ -1,6 +1,9 @@
 <html>
 
 <head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="sweetalert2.all.min.js"></script>
+
     <style>
         * {
             margin: 10px 0;
@@ -96,6 +99,8 @@
 </head>
 
 <body>
+
+    
     <a class="green add"  href="{{ route('books.create') }}"> Add New Book</a>
     <div class="box-wrap">
         <h1>Books Records</h1>
@@ -120,12 +125,12 @@
                         <td>{{ $book['id'] }}</td>
                         <td>{{ $book['name'] }}</td>
                         <td>
-                            <form action="{{ route('books.destroy',$book->id) }}" method="Post">
+                            <form action="{{ route('books.destroy',$book->id) }}" method="Post" >
                             
                                 <a class="green" href="{{ route('books.edit',$book->id) }}">Edit</a>
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="red">Delete</button>
+                                <button type="submit" class="red" onclick="confirmation(event)">Delete</button>
                             </form>
                         </td>
                     </tr>
@@ -137,6 +142,65 @@
     </div>
     </div>
     </div>
+
+<script>
+
+@if(session()->has('success'))
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Book saved successfully.',
+});
+@endif
+
+@if(session()->has('update'))
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Book name updated successfully.',
+});
+@endif
+
+function confirmation(ev){
+ev.preventDefault();
+var form = event.target.form;
+
+Swal.fire({
+  title: 'Are you sure?',
+  text: "You won't be able to revert this!",
+  icon: 'warning',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'delete!'
+}).then((result) => {
+  if (result.isConfirmed) {
+    form.submit();
+  } else if (
+    /* Read more about handling dismissals below */
+    result.dismiss === Swal.DismissReason.cancel
+  ) {
+    swal.fire(
+      'Cancelled',
+      'Your Book is safe.',
+      'error'
+    )
+  }
+})
+}
+@if(session()->has('delete'))
+Swal.fire({
+  icon: 'success',
+  title: 'Success',
+  text: 'Book Deleted successfully.',
+});
+@endif
+
+        
+        
+  
+</script>
+
 </body>
 
 </html>
