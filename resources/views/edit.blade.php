@@ -77,6 +77,9 @@ a {
                     <div>
                         <h2>Update Book Name:</h2>
                         <input type="text" name="name" value="{{ $book->name }}" placeholder="Enter your book name">
+                        @if ($errors->has('name'))
+                        <span class="text-danger">{{ $errors->first('name') }}</span>
+                @endif
                         <button type="submit" class="btn btn-primary ml-3">Save</button>
                     </div> 
 </form>
