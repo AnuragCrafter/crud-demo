@@ -45,7 +45,7 @@
             margin-top: 30vh;
             text-align: center;
             color: white;
-        }
+        }        
 
         input {
             height: 35px;
@@ -70,6 +70,13 @@
         .text-danger {
             color: red;
         }
+
+        select {
+            height: 35px;
+            width: 220px;
+            margin: auto;
+        }
+
     </style>
 
 </head>
@@ -83,10 +90,24 @@
 
         <div>
             <h2>Book Name:</h2>
+
             <input type="text" name="name" placeholder="Enter your book name">
             @if ($errors->has('name'))
                 <span class="text-danger">{{ $errors->first('name') }}</span>
             @endif
+
+            <h4 >Category</h4>
+            <Select name="category" id="category">
+            @foreach($categories as $category)
+
+            <option value="{{ $category->id }}">
+                {{$category->name}}
+            </option>
+                
+            @endforeach
+
+            </Select>
+
             <button type="submit" class="btn btn-primary ml-3">Save</button>
         </div>
     </form>

@@ -92,7 +92,8 @@
             margin-right:10px;
             height:18px;
         }
-        .cat {
+
+        .books {
             float:left;
             padding: 10px;
             margin-left:10px;
@@ -108,22 +109,23 @@
 <body>
 
     
-    <a class="green add"  href="{{ route('books.create') }}"> Add New Book</a>
-    <a class="green cat"  href="{{ route('categories.index') }}"> Switch to Categories</a>
+    <a class="green add"  href="{{route('categories.create')}}"> Add New Category</a>
+    <a class="green books"  href="{{ route('books.index') }}"> Switch to Books</a>
+
     <div class="box-wrap">
-        <h1>Books Records</h1>
+        <h1>Categories</h1>
     </div>
     <div class="table-wrap">
         <table>
             <thead>
                 <th>
-                    <h3>Book ID</h3>
+                    <h3>ID</h3>
                 </th>
                 <th>
-                    <h3>Book Name</h3>
+                    <h3>Category Name</h3>
                 </th>
                 <th>
-                    <h3>Category</h3>
+                    <h3>Books Count</h3>
                 </th>
                 <th>
                     <h3>Action</h3>
@@ -131,20 +133,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($books as $book)
+                @foreach ($categories as $category)
                     <tr>
-                        <td>{{ $book['id'] }}</td>
-                        <td>{{ $book['name'] }}</td>
-                        <td> 
-                        {{$book->category->name}} 
-                        </td>
+                        <td>{{ $category['id'] }}</td>
+                        <td>{{ $category['name'] }}</td>
+                        <td>{{$category->books->count()}}</td>
                         <td>
-                            <form action="{{ route('books.destroy',$book->id) }}" method="Post" >
+                            <form action="{{ route('categories.destroy',$category->id) }}" method="Post" >
                             
-                                <a class="green" href="{{ route('books.edit',$book->id) }}">Edit</a>
+                                <a class="green" href="{{route('categories.edit',$category->id)}}">Edit</a>
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="red" onclick="confirmation(event)">Delete</button>
+                                <button type="submit" class="red" onclick="confirmation(event)"> Delete </button>
                             </form>
                         </td>
                     </tr>
@@ -157,13 +157,16 @@
     </div>
     </div>
 
+
+</body>
+
 <script>
 
 @if(session()->has('success'))
 Swal.fire({
   icon: 'success',
   title: 'Success',
-  text: 'Book saved successfully.',
+  text: 'Category created successfully.',
 });
 @endif
 
@@ -171,7 +174,7 @@ Swal.fire({
 Swal.fire({
   icon: 'success',
   title: 'Success',
-  text: 'Book name updated successfully.',
+  text: 'Category name updated successfully.',
 });
 @endif
 
@@ -196,7 +199,7 @@ Swal.fire({
   ) {
     swal.fire(
       'Cancelled',
-      'Your Book is safe.',
+      'Your Category is safe.',
       'error'
     )
   }
@@ -206,12 +209,10 @@ Swal.fire({
 Swal.fire({
   icon: 'success',
   title: 'Success',
-  text: 'Book Deleted successfully.',
+  text: 'Category Deleted successfully.',
 });
 @endif
 
 </script>
-
-</body>
 
 </html>

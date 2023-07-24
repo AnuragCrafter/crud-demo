@@ -70,47 +70,25 @@
         .text-danger {
             color: red;
         }
-
-        select {
-            height: 35px;
-            width: 220px;
-            margin: auto;
-        }
-
-
     </style>
 
 </head>
 
 <body>
-    <a href="{{ route('books.index') }}"> Back</a>
-    <h3>Edit Book details</h3>
+    <a href="{{ route('categories.index') }}"> Back</a>
+    <h3>Enter Category details</h3>
 
-    <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
 
         <div>
-            <h2>Update Book Name:</h2>
-            <input type="text" name="name" value="{{ $book->name }}" placeholder="Enter your book name">
+            <h2>Category Name:</h2>
+            
+            <input type="text" name="name" placeholder="Enter Category name">
             @if ($errors->has('name'))
                 <span class="text-danger">{{ $errors->first('name') }}</span>
             @endif
 
-            <label for="category">Category</label>
-            <Select name="category" id="category">
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}"
-                    
-                    @if($category->id == $book->category_id)
-                        selected
-                    @endif
-                    >
-                        {{ $category->name }}
-                    </option>
-                @endforeach
-
-            </Select>
             <button type="submit" class="btn btn-primary ml-3">Save</button>
         </div>
     </form>

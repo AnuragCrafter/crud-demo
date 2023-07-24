@@ -5,17 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Books extends Model
+class Category extends Model
 {
-    public $timestamps = false;
     use HasFactory;
-    public $fillable =  [
+    protected $fillable =  [
         'id',
         'name',
-        'category_id',
     ];
 
-    public function category(){
-        return $this->belongsTo(Category::class);
+    public function books(){
+        return $this->hasMany(Books::class);
     }
 }
