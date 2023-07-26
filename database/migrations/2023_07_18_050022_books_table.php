@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if(!Schema::hasTable('books')){
         Schema::create('books', function(Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table-> integer('category_id');
+            $table->integer('category_id');
+            $table->string('category_name');
+            $table->integer('user_id');
         });
     }
-
+    }
     /**
      * Reverse the migrations.
      */

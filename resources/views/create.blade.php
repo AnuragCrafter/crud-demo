@@ -107,6 +107,9 @@
             @endforeach
 
             </Select>
+            @if ($errors->has('category'))
+                <span class="text-danger">{{ $errors->first('category') }}</span>
+            @endif
 
             <button type="submit" class="btn btn-primary ml-3">Save</button>
         </div>

@@ -6,8 +6,26 @@
 
     <style>
         * {
-            margin: 10px 0;
             padding: 0;
+        }
+
+        .container {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid black;
+        }
+
+        .subContainer2 {
+            flex:0.05;
+            align-items: center;
+            
+        }
+
+        .subContainer1 {
+            flex:1;
+            display:flex;
+            gap: 50px;
         }
 
         h1 {
@@ -15,14 +33,14 @@
         }
 
         a {
-            height:30px;
-            padding:10px 15px;
-            text-decoration:none;            
+            height: 30px;
+            padding: 10px 15px;
+            text-decoration: none;
         }
 
         .table-wrap {
             max-width: 800px;
-            margin: 20px auto;
+            margin: 40px auto;
             overflow-x: auto;
         }
 
@@ -33,6 +51,7 @@
             text-align: center;
             font-size: 15px;
             text-transform: capitalize;
+            align-items:center;
         }
 
         th {
@@ -79,6 +98,11 @@
             border-radius: 5px;
         }
 
+        .nav {
+            border: none;
+            color: black;
+        }
+
         .red {
             background: #ed3b3b;
             color: white;
@@ -87,30 +111,56 @@
         }
 
         .add {
-            float:right;
+            float: right;
             padding: 10px;
-            margin-right:10px;
-            height:18px;
+            margin-right: 10px;
+            height: 18px;
         }
 
-        .books {
-            float:left;
+        .cat {
+            float: left;
             padding: 10px;
-            margin-left:10px;
-            height:18px;
+            margin-left: 10px;
+            height: 18px;
+            border: 5px;
+            background: none;
         }
 
+        select {
+            height: 35px;
+            width: 220px;
+            float: right;
+            margin-bottom:10px;
+        }
+
+        ul {
+            display: flex;
+        }
     </style>
 
 
-    <title>View Books Records</title>
+    <title>Categories</title>
 </head>
 
 <body>
 
-    
-    <a class="green add"  href="{{route('categories.create')}}"> Add New Category</a>
-    <a class="green books"  href="{{ route('books.index') }}"> Switch to Books</a>
+    <div class="container">
+        <div class="subContainer1">
+            <a class="nav cat" href="{{ route('books.index') }}"> Switch to Books</a>
+            <a class="nav cat" href="{{route('categories.create')}}"> Add New Category</a>
+        </div>
+        <div class="subContainer2">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+
+                <a href="route('logout')" onclick="event.preventDefault();
+                this.closest('form').submit();"
+                    class="nav cat">
+                    {{ __('Log Out') }}
+                </a>
+            </form>
+        </div>
+    </div>
 
     <div class="box-wrap">
         <h1>Categories</h1>

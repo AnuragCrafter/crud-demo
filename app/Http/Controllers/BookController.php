@@ -5,35 +5,54 @@ namespace App\Http\Controllers;
 use App\Models\Books;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Books::orderBy('id', 'asc')->get();
 
-        return view("books", ['books' => $books]);
+        if (auth()->user()) {
+            if ($request->category == "All") {
+
+                $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->get();
+
+            } elseif ($request->category) {
+
+                $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->where('category_id', $request->category)->get();
+
+                
+            } else {
+
+                $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->get();
+
+            }
+            return view("books", ['books' => $books])->with('categories', Category::all());
+        } else {
+            return redirect()->route('login');
+        }
+        
     }
 
     public function create()
     {
-        return view("create")->with('categories',Category::all());
+        return view("create")->with('categories', Category::all());
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:books|regex:/[a-zA-Z0-9\s]+/',
-            'category' => 'required'
+            'category' => 'required',
+        ],[
+            'category' => 'Create category first',
         ]);
-
         Books::create([
-            'id'=> $request->title,
-            'name'=> $request->name,
-            'category_id'=> $request->category,
+            'id' => $request->title,
+            'name' => $request->name,
+            'category_id' => $request->category,
+            'category_name' => $request->category,
         ]);
-        return redirect()->route('books.index')->with('success','Book has been created successfully');
+        return redirect()->route('books.index')->with('success', 'Book has been created successfully');
 
     }
 
@@ -42,15 +61,15 @@ class BookController extends Controller
         return view('books.show', compact('books'));
     }
 
-    public function edit(Books $book)
+    public function edit(Books $book) 
     {
-        return view('edit', compact('book'))->with('categories',Category::all());
+        return view('edit', compact('book'))->with('categories', Category::all());
     }
 
     public function update(Request $request, Books $book)
     {
         $request->validate([
-            'name' => 'required|unique:books|alpha_num',
+            'name' => 'required|regex:/[a-zA-Z0-9\s]+/',
             'category' => 'required',
         ]);
 
@@ -63,9 +82,6 @@ class BookController extends Controller
     {
 
         $book->delete();
-        DB::statement("SET @count = 0;");
-        DB::statement("UPDATE `books` SET `books`.`id` = @count:= @count + 1;");
-        DB::statement("ALTER TABLE `books` AUTO_INCREMENT = 1;");
         return redirect()->route('books.index')->with('success', 'Book has been deleted successfully');
     }
 }

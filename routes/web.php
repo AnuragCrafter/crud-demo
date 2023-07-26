@@ -17,11 +17,12 @@ use Illuminate\Support\Facades\DB;
 */
 
 Route::get('/', function () {
-    return redirect()->route('books.index');
+    return view('welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    // return view('dashboard');
+    return redirect()->route('books.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

@@ -97,7 +97,7 @@
                 <span class="text-danger">{{ $errors->first('name') }}</span>
             @endif
 
-            <label for="category">Category</label>
+            {{-- <label for="category">Category</label>
             <Select name="category" id="category">
                 @foreach ($categories as $category)
                     <option value="{{ $category->id }}"
@@ -108,7 +108,22 @@
                     >
                         {{ $category->name }}
                     </option>
-                @endforeach
+                @endforeach --}}
+
+                <h4 >Category</h4>
+            <Select name="category" id="category">
+            @foreach($categories as $category)
+
+            <option value="{{ $category->id }}">
+                {{$category->name}}
+            </option>
+                
+            @endforeach
+
+            </Select>
+            @if ($errors->has('category'))
+                <span class="text-danger">{{ $errors->first('category') }}</span>
+            @endif
 
             </Select>
             <button type="submit" class="btn btn-primary ml-3">Save</button>
