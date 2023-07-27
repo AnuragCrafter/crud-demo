@@ -14,7 +14,6 @@ class Books extends Model
         'id',
         'name',
         'category_id',
-        'category_name',
         'user_id'
     ];
 

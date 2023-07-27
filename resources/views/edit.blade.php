@@ -91,30 +91,21 @@
         @method('PUT')
 
         <div>
-            <h2>Update Book Name:</h2>
+            <h4>Update Book Name:</h4>
             <input type="text" name="name" value="{{ $book->name }}" placeholder="Enter your book name">
             @if ($errors->has('name'))
                 <span class="text-danger">{{ $errors->first('name') }}</span>
             @endif
 
-            {{-- <label for="category">Category</label>
-            <Select name="category" id="category">
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}"
-                    
-                    @if($category->id == $book->category_id)
-                        selected
-                    @endif
-                    >
-                        {{ $category->name }}
-                    </option>
-                @endforeach --}}
-
                 <h4 >Category</h4>
             <Select name="category" id="category">
             @foreach($categories as $category)
 
-            <option value="{{ $category->id }}">
+            <option value="{{ $category->id }}"
+                @if($category->id == $book->category_id)
+                    selected
+                @endif
+            >
                 {{$category->name}}
             </option>
                 

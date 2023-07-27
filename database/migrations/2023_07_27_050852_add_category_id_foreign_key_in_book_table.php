@@ -11,21 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if(!Schema::hasTable('books')){
-        Schema::create('books', function(Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->integer('category_id');
-            $table->string('category_name');
-            $table->integer('user_id');
+        Schema::table('books', function (Blueprint $table) {  
+            $table->foreignId('category_id')->constrained();
         });
     }
-    }
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        //
+        Schema::table('books', function (Blueprint $table) {
+            //
+        });
     }
 };

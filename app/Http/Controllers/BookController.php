@@ -20,7 +20,6 @@ class BookController extends Controller
 
                 $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->where('category_id', $request->category)->get();
 
-                
             } else {
 
                 $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->get();
@@ -28,7 +27,7 @@ class BookController extends Controller
             }
             return view("books", ['books' => $books])->with('categories', Category::all());
         } else {
-            return redirect()->route('login');
+            return redirect()->route('register');
         }
         
     }
@@ -50,7 +49,6 @@ class BookController extends Controller
             'id' => $request->title,
             'name' => $request->name,
             'category_id' => $request->category,
-            'category_name' => $request->category,
         ]);
         return redirect()->route('books.index')->with('success', 'Book has been created successfully');
 
@@ -61,7 +59,7 @@ class BookController extends Controller
         return view('books.show', compact('books'));
     }
 
-    public function edit(Books $book) 
+    public function edit(Books $book, Category $category) 
     {
         return view('edit', compact('book'))->with('categories', Category::all());
     }
@@ -72,7 +70,6 @@ class BookController extends Controller
             'name' => 'required|regex:/[a-zA-Z0-9\s]+/',
             'category' => 'required',
         ]);
-
         $book->update($request->all());
 
         return redirect()->route('books.index')->with('update', 'Book Has Been updated successfully');
