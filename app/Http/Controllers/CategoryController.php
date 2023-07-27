@@ -31,7 +31,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|unique:categories|alpha_num',
+            'name' => 'required|unique:categories|regex:/[a-zA-Z0-9\s]+/',
         ]);
 
         Category::create($request->all());
@@ -60,7 +60,7 @@ class CategoryController extends Controller
     public function update(Request $request, Category $category)
     {
         $request->validate([
-            'name' => 'required|unique:books|alpha_num',
+            'name' => 'required|unique:books|regex:/[a-zA-Z0-9\s]+/',
         ]);
 
         $category->update($request->all());
@@ -73,10 +73,8 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $category->books()->delete();
         $category->delete();
-        DB::statement("SET @count = 0;");
-        DB::statement("UPDATE `categories` SET `categories`.`id` = @count:= @count + 1;");
-        DB::statement("ALTER TABLE `categories` AUTO_INCREMENT = 1;");
         return redirect()->route('categories.index')->with('delete', 'category has been deleted successfully');
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Books;
 use App\Models\Category;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -19,6 +21,13 @@ class BookController extends Controller
             } elseif ($request->category) {
 
                 $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->where('category_id', $request->category)->get();
+
+                // $books = Books::has('user_id', auth()->user()->id)->get();
+
+                // $books = Books::whereHas('users', function (Builder $query) {
+                //     $query->where('user_id',auth()->user()->id);
+                // })->get();
+
 
             } else {
 
