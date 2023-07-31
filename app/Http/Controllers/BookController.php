@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CategoryRequest;
+use App\Http\Requests\BookRequest;
 use App\Models\Books;
 use App\Models\Category;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -27,6 +26,7 @@ class BookController extends Controller
                     $categories = $query1->where('id', $request->category)->get();
                     return response()->json(['books' => $books, 'categories' => $categories]);
                 }
+
             } else {
                 $books = $query->where('user_id', auth()->user()->id)->get();
             }
@@ -46,7 +46,7 @@ class BookController extends Controller
         return view("create")->with('categories', Category::all());
     }
 
-    public function store(CategoryRequest $request)
+    public function store(BookRequest $request)
     {
         $request->validate([]);
         Books::create([
@@ -68,9 +68,10 @@ class BookController extends Controller
         return view('edit', compact('book'))->with('categories', Category::all());
     }
 
-    public function update(CategoryRequest $request, Books $book)
+    public function update(BookRequest $request, Books $book)
     {
         $request->validate([]);
+
         $book->update([
             'name' => $request->name,
             'category_id' => $request->category,

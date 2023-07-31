@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CategoryRequest extends FormRequest
+class BookRequest extends FormRequest
 {
     
     public function authorize(): bool
@@ -16,8 +16,7 @@ class CategoryRequest extends FormRequest
     
     public function rules(): array
     {
-
-        switch($this->method())
+            switch($this->method())
     {
         case 'GET':
         case 'DELETE':
@@ -29,9 +28,11 @@ class CategoryRequest extends FormRequest
             return [
                 'name' => [
                     'required',
-                    'Unique:categories',
+                    'Unique:books',
                     'regex:/[a-zA-Z0-9\s]+/'
-                ]];
+                ],
+                'category' => 'required',
+            ];
         }
         case 'PUT':
         case 'PATCH':
@@ -39,16 +40,13 @@ class CategoryRequest extends FormRequest
             return [                    
                 'name' => [
                     'required',
-                    Rule::unique('categories')->ignore($this->category),
+                    Rule::unique('books')->ignore($this->book),
                     'regex:/[a-zA-Z0-9\s]+/'
-                ]
+                ],
+                'category' => 'required',
             ];
         }
         default:break;
-    }    
+    } 
     }
-    public function messages(): array
-{
-    return [];
-}
 }

@@ -76,8 +76,6 @@
             width: 220px;
             margin: auto;
         }
-
-
     </style>
 
 </head>
@@ -97,19 +95,13 @@
                 <span class="text-danger">{{ $errors->first('name') }}</span>
             @endif
 
-                <h4 >Category</h4>
+            <h4>Category</h4>
             <Select name="category" id="category">
-            @foreach($categories as $category)
-
-            <option value="{{ $category->id }}"
-                @if($category->id == $book->category_id)
-                    selected
-                @endif
-            >
-                {{$category->name}}
-            </option>
-                
-            @endforeach
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" @if ($category->id == $book->category_id) selected @endif>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
 
             </Select>
             @if ($errors->has('category'))

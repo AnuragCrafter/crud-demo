@@ -239,18 +239,18 @@
                         var res = '';
                         for (let i = 0; i < books.length; i++) {
                             res += '<tr>\
-                                    <td>' + books[i]['id'] + '</td>\
-                                    <td>' + books[i]['name'] + '</td>\
-                                    <td>' + category[i]['name'] + '</td>\
-                                    @if (count($books) > 0)\
-                                    <td><form action="{{ route('books.destroy', $book->id) }}" method="Post"> <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>\
-                                     @csrf\
-                                     @method('DELETE')\
-                                    <button type="submit" class="red" onclick="confirmation(event)">Delete</button>\
-                                    @endif\
-                                </form>\
-                            </td>\
-                                </tr>';
+                                        <td>' + books[i]['id'] + '</td>\
+                                        <td>' + books[i]['name'] + '</td>\
+                                        <td>' + category[i]['name'] + '</td>\
+                                        @if (count($books) > 0)\
+                                        <td><form action="{{ route('books.destroy', $book->id) }}" method="Post"> <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>\
+                                         @csrf\
+                                         @method('DELETE')\
+                                        <button type="submit" class="red" onclick="confirmation(event)">Delete</button>\
+                                        @endif\
+                                    </form>\
+                                </td>\
+                                    </tr>';
                         }
                         $("#tbody").html(res);
                     }
