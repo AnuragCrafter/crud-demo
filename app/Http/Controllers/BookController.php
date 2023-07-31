@@ -2,43 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Books;
 use App\Models\Category;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
     public function index(Request $request)
     {
-
         if (auth()->user()) {
-            if ($request->category == "All") {
 
-                $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->get();
+            $query = Books::query();
+            $query1 = Category::query();
 
-            } elseif ($request->category) {
+            if ($request->ajax()) {
 
-                $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->where('category_id', $request->category)->get();
-
-                // $books = Books::has('user_id', auth()->user()->id)->get();
-
-                // $books = Books::whereHas('users', function (Builder $query) {
-                //     $query->where('user_id',auth()->user()->id);
-                // })->get();
-
-
+                if ($request->category == "Null") {
+                    $books = $query->where('user_id', auth()->user()->id)->get();
+                    return response()->json(['books' => $books, 'categories' => Category::all()]);
+                } else {
+                    $books = $query->where('user_id', auth()->user()->id)->where(['category_id' => $request->category])->get();
+                    $categories = $query1->where('id', $request->category)->get();
+                    return response()->json(['books' => $books, 'categories' => $categories]);
+                }
             } else {
-
-                $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->get();
-
+                $books = $query->where('user_id', auth()->user()->id)->get();
             }
-            return view("books", ['books' => $books])->with('categories', Category::all());
+
+            $books = $query->get();
+            $categories = $query1->get();
+            return view('books', compact('categories', 'books'));
+
         } else {
-            return redirect()->route('register');
+            return redirect()->route('login');
         }
-        
+
     }
 
     public function create()
@@ -46,14 +46,9 @@ class BookController extends Controller
         return view("create")->with('categories', Category::all());
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $request->validate([
-            'name' => 'required|unique:books|regex:/[a-zA-Z0-9\s]+/',
-            'category' => 'required',
-        ],[
-            'category' => 'Create category first',
-        ]);
+        $request->validate([]);
         Books::create([
             'id' => $request->title,
             'name' => $request->name,
@@ -68,18 +63,18 @@ class BookController extends Controller
         return view('books.show', compact('books'));
     }
 
-    public function edit(Books $book, Category $category) 
+    public function edit(Books $book)
     {
         return view('edit', compact('book'))->with('categories', Category::all());
     }
 
-    public function update(Request $request, Books $book)
+    public function update(CategoryRequest $request, Books $book)
     {
-        $request->validate([
-            'name' => 'required|regex:/[a-zA-Z0-9\s]+/',
-            'category' => 'required',
+        $request->validate([]);
+        $book->update([
+            'name' => $request->name,
+            'category_id' => $request->category,
         ]);
-        $book->update($request->all());
 
         return redirect()->route('books.index')->with('update', 'Book Has Been updated successfully');
     }

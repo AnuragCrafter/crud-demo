@@ -32,7 +32,7 @@
             </label>
         </div>
         
-        <div class="flex items-bottom justify-between mt-4" >
+        <div class="flex  justify-between mt-4 items-center" >
         <div>
                 <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('register') }}">
                     {{ __('Register Now') }}

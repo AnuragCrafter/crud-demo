@@ -3,6 +3,7 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="sweetalert2.all.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <style>
         * {
@@ -17,15 +18,15 @@
         }
 
         .subContainer1 {
-            flex:1;
-            display:flex;
+            flex: 1;
+            display: flex;
             gap: 50px;
         }
 
         .subContainer2 {
-            flex:0.05;
+            flex: 0.05;
             align-items: center;
-            
+
         }
 
         h1 {
@@ -51,7 +52,7 @@
             text-align: center;
             font-size: 15px;
             text-transform: capitalize;
-            align-items:center;
+            align-items: center;
         }
 
         th {
@@ -79,8 +80,6 @@
         .box-wrap {
             padding: 0px 16px;
         }
-
-        /*# sourceMappingURL=main.css.map */
 
         button {
             font-size: 15px;
@@ -130,7 +129,7 @@
             height: 35px;
             width: 220px;
             float: right;
-            margin-bottom:10px;
+            margin-bottom: 10px;
         }
 
         ul {
@@ -153,8 +152,9 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
-                <a href="route('logout')" onclick="event.preventDefault();
-                this.closest('form').submit();"
+                <a href="route('logout')"
+                    onclick="event.preventDefault();
+                    this.closest('form').submit();"
                     class="nav cat">
                     {{ __('Log Out') }}
                 </a>
@@ -168,16 +168,13 @@
     </div>
 
     <div class="table-wrap">
-        
 
-        <select onchange="document.location=this.options[this.selectedIndex].value">
-            <option disabled="disabled" selected>Pick a choice!</option>
-            <option value={{ route('books.index') }}>All</option>
+        <select name="category" id="category">
+            <option value="Null">All</option>
             @foreach ($categories as $category)
-                <option value="{{ route('books.index', ['category' => $category->id]) }}"
-                    {{ $books == $category->name ? 'selected' : '' }}>{{ $category->name}}</option>
+                <option value="{{ $category['id'] }}">{{ $category->name }}</option>
             @endforeach
-        </Select>
+        </select>
 
         <table>
             <thead>
@@ -195,10 +192,8 @@
                 </th>
                 </tr>
             </thead>
-            <tbody>
-            
-                
-            
+            <tbody id="tbody">
+
                 @foreach ($books as $book)
                     <tr>
                         <td>{{ $book['id'] }}</td>
@@ -207,7 +202,7 @@
                             {{ $book->category->name }}
                         </td>
                         <td>
-                        
+
                             <form action="{{ route('books.destroy', $book->id) }}" method="Post">
 
                                 <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>
@@ -216,11 +211,9 @@
                                 <button type="submit" class="red" onclick="confirmation(event)">Delete</button>
                             </form>
                         </td>
-                    </tr>                    
-                
+                    </tr>
                 @endforeach
-                
-                
+
             </tbody>
         </table>
     </div>
@@ -230,6 +223,42 @@
     </div>
 
     <script>
+        $(document).ready(function() {
+            $("#category").on('change', function() {
+                var category = $(this).val();
+                $.ajax({
+                    url: "{{ route('books.index') }}",
+                    type: "GET",
+                    data: {
+                        'category': category
+                    },
+                    success: function(data) {
+                        console.log(data)
+                        var books = data.books;
+                        var category = data.categories;
+                        var res = '';
+                        for (let i = 0; i < books.length; i++) {
+                            res += '<tr>\
+                                    <td>' + books[i]['id'] + '</td>\
+                                    <td>' + books[i]['name'] + '</td>\
+                                    <td>' + category[i]['name'] + '</td>\
+                                    @if (count($books) > 0)\
+                                    <td><form action="{{ route('books.destroy', $book->id) }}" method="Post"> <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>\
+                                     @csrf\
+                                     @method('DELETE')\
+                                    <button type="submit" class="red" onclick="confirmation(event)">Delete</button>\
+                                    @endif\
+                                </form>\
+                            </td>\
+                                </tr>';
+                        }
+                        $("#tbody").html(res);
+                    }
+                });
+            })
+        })
+
+
         @if (session()->has('success'))
             Swal.fire({
                 icon: 'success',
@@ -262,7 +291,6 @@
                 if (result.isConfirmed) {
                     form.submit();
                 } else if (
-                    /* Read more about handling dismissals below */
                     result.dismiss === Swal.DismissReason.cancel
                 ) {
                     swal.fire(
