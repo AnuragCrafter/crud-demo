@@ -11,8 +11,12 @@ class CategoryController extends Controller
     
     public function index()
     {
+        if (auth()->user()) {
         $categories = Category::orderBy('id', 'asc')->get();
         return view("categories.index", ['categories' => $categories]);
+    } else {
+        return redirect()->route('login');
+    }
     }
 
     

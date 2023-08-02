@@ -16,37 +16,22 @@ class BookRequest extends FormRequest
     
     public function rules(): array
     {
-            switch($this->method())
-    {
-        case 'GET':
-        case 'DELETE':
-        {
-            return [];
-        }
-        case 'POST':
-        {
-            return [
+       return [
                 'name' => [
                     'required',
-                    'Unique:books',
+                    Rule::unique('books','name','NULL')
+                          ->where('user_id',auth()->user()->id)
+                          ->ignore($this->book),
                     'regex:/[a-zA-Z0-9\s]+/'
                 ],
                 'category' => 'required',
             ];
-        }
-        case 'PUT':
-        case 'PATCH':
-        {
-            return [                    
-                'name' => [
-                    'required',
-                    Rule::unique('books')->ignore($this->book),
-                    'regex:/[a-zA-Z0-9\s]+/'
-                ],
-                'category' => 'required',
-            ];
-        }
-        default:break;
-    } 
     }
+
+    public function messages(): array
+{
+    return [
+        'name.unique' =>'Book Already exists'
+    ];
+}
 }

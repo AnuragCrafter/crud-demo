@@ -13,26 +13,35 @@ class BookController extends Controller
     {
         if (auth()->user()) {
 
-            $query = Books::query();
-            $query1 = Category::query();
+            $book = Books::query();
+            $category = Category::query();
 
             if ($request->ajax()) {
 
                 if ($request->category == "Null") {
-                    $books = $query->where('user_id', auth()->user()->id)->get();
-                    return response()->json(['books' => $books, 'categories' => Category::all()]);
+                    $books = $book->where('user_id', auth()->user()->id)->get();
+                    $categories = $book
+                            ->join('categories', 'books.category_id', '=', 'categories.id')
+                            ->select('books.name as book_name','categories.name as category_name')
+                            ->get();
+
+                    return response()->json(['categories' => $categories]);
                 } else {
-                    $books = $query->where('user_id', auth()->user()->id)->where(['category_id' => $request->category])->get();
-                    $categories = $query1->where('id', $request->category)->get();
-                    return response()->json(['books' => $books, 'categories' => $categories]);
+                    $books = $book->where('user_id', auth()->user()->id)->where(['category_id' => $request->category])->get();
+                    $categories = $book
+                            ->join('categories', 'books.category_id', '=', 'categories.id')
+                            ->select('books.name as book_name','categories.name as category_name')
+                            ->get();
+
+                    return response()->json(['categories' => $categories]);
                 }
 
             } else {
-                $books = $query->where('user_id', auth()->user()->id)->get();
+                $books = $book->where('user_id', auth()->user()->id)->get();
             }
 
-            $books = $query->get();
-            $categories = $query1->get();
+            $books = $book->get();
+            $categories = $category->get();
             return view('books', compact('categories', 'books'));
 
         } else {
@@ -40,6 +49,8 @@ class BookController extends Controller
         }
 
     }
+
+    
 
     public function create()
     {

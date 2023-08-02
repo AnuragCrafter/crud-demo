@@ -179,7 +179,7 @@
         <table>
             <thead>
                 <th>
-                    <h3>Book ID</h3>
+                    <h3>Sr no</h3>
                 </th>
                 <th>
                     <h3>Book Name</h3>
@@ -195,8 +195,9 @@
             <tbody id="tbody">
 
                 @foreach ($books as $book)
+                
                     <tr>
-                        <td>{{ $book['id'] }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $book['name'] }}</td>
                         <td>
                             {{ $book->category->name }}
@@ -233,15 +234,15 @@
                         'category': category
                     },
                     success: function(data) {
-                        console.log(data)
-                        var books = data.books;
-                        var category = data.categories;
+                        var categories = data.categories;
                         var res = '';
-                        for (let i = 0; i < books.length; i++) {
+                        var j = 1;
+                        for (let i = 0; i < categories.length; i++) {
+                            var j=i+1;
                             res += '<tr>\
-                                        <td>' + books[i]['id'] + '</td>\
-                                        <td>' + books[i]['name'] + '</td>\
-                                        <td>' + category[i]['name'] + '</td>\
+                                        <td>' + j + '</td>\
+                                        <td>' + categories[i]['book_name'] + '</td>\
+                                        <td>' + categories[i]['category_name'] + '</td>\
                                         @if (count($books) > 0)\
                                         <td><form action="{{ route('books.destroy', $book->id) }}" method="Post"> <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>\
                                          @csrf\
