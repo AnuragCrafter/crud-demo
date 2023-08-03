@@ -4,80 +4,93 @@
 
 <style>
 * {
-            margin: 10px 0;
             padding: 0;
         }
-a {
-            margin-top:100px;
-            height:30px;
-            padding:10px 15px;;
-            text-decoration:none;
-            margin-left:1840px;
+
+        .container {
+            height: 50px;
+            color:black;
+            border-bottom: 1px solid black;
+        }
+
+        a {
+            height: 18px;
+            padding: 10px 15px;
+            text-decoration: none;
+            margin: 5px;
+            float:right;
             background: #369c73;
             color: white;
             border: none;
             border-radius: 5px;
         }
-    div {
-        max-width:250px;
-        height: 200px;
-        padding: 30px;
-        background:#d9dbde;
-        display:flex;
-        flex-direction:column;
-        margin:auto;
-        margin-top:3vh;
-        text-align: center;
-        justify-content: center;
-        
 
-    }
+        .box {
+            max-width: 250px;
+            height: 230px;
+            padding: 30px;
+            background: #d9dbde;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            margin-top: 3vh;
+            text-align: center;
+            justify-content: center;
 
-    h3 {
-           background: #369c73;
-           width: 200px;
-           margin:auto;
-           padding:10px 55px;
-           margin-top:30vh;
-           text-align:center;
-           color:white;
-    }
 
-    input {
-        height:35px;
-        width: 220px;
-        margin:auto;
-    }
+        }
 
-    button {
+        h3 {
+            background: #369c73;
+            width: 200px;
+            margin: auto;
+            padding: 10px 55px;
+            margin-top: 20vh;
+            text-align: center;
+            color: white;
+        }
+
+        input {
+            height: 35px;
+            width: 220px;
+            margin: auto;
+        }
+
+        button {
             font-size: 15px;
             padding: 5px;
             text-align: center;
-            margin: auto;
+            margin: 10 auto 0;
             width: 80px;
             height: 35px;
-            cursor:pointer;
+            cursor: pointer;
             background: #369c73;
             color: white;
             border: none;
             border-radius: 5px;
         }
+
         .text-danger {
             color: red;
         }
-        
+
+        select {
+            height: 35px;
+            width: 220px;
+            margin: auto;
+        }
 </style>
 
 </head>
 <body>
-        <a href="{{ route('books.index') }}"> Back</a>
+        <div class="container"><a href="{{ route('categories.index') }}"> Back</a></div>
 <h3>Edit Category details</h3>
 
 <form action="{{ route('categories.update',$category->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
                     
-                    <div>
+                    <div class="box">
                         <h2>Update Category Name:</h2>
                         <input type="text" name="name" value="{{ $category->name }}" placeholder="Enter your category name">
                         @if ($errors->has('name'))

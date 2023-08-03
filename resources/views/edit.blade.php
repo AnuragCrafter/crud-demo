@@ -5,26 +5,30 @@
 
     <style>
         * {
-            margin: 10px 0;
             padding: 0;
         }
 
+        .container {
+            height: 50px;
+            color:black;
+            border-bottom: 1px solid black;
+        }
+
         a {
-            margin-top: 100px;
-            height: 30px;
+            height: 18px;
             padding: 10px 15px;
-            ;
             text-decoration: none;
-            margin-left: 1840px;
+            margin: 5px;
+            float:right;
             background: #369c73;
             color: white;
             border: none;
             border-radius: 5px;
         }
 
-        div {
+        .box {
             max-width: 250px;
-            height: 200px;
+            height: 230px;
             padding: 30px;
             background: #d9dbde;
             display: flex;
@@ -42,7 +46,7 @@
             width: 200px;
             margin: auto;
             padding: 10px 55px;
-            margin-top: 30vh;
+            margin-top: 20vh;
             text-align: center;
             color: white;
         }
@@ -57,7 +61,7 @@
             font-size: 15px;
             padding: 5px;
             text-align: center;
-            margin: auto;
+            margin: 10 auto 0;
             width: 80px;
             height: 35px;
             cursor: pointer;
@@ -81,14 +85,14 @@
 </head>
 
 <body>
-    <a href="{{ route('books.index') }}"> Back</a>
+    <div class="container"><a href="{{ route('books.index') }}"> Back</a></div>
     <h3>Edit Book details</h3>
 
     <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
-        <div>
+        <div class="box">
             <h4>Update Book Name:</h4>
             <input type="text" name="name" value="{{ $book->name }}" placeholder="Enter your book name">
             @if ($errors->has('name'))

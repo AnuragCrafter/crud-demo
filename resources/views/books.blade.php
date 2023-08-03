@@ -228,7 +228,7 @@
             $("#category").on('change', function() {
                 var category = $(this).val();
                 $.ajax({
-                    url: "{{ route('books.index') }}",
+                    url: "{{ route('CategoryFilter') }}",
                     type: "GET",
                     data: {
                         'category': category
