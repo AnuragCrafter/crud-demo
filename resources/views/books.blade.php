@@ -170,7 +170,7 @@
     <div class="table-wrap">
 
         <select name="category" id="category">
-            <option value="Null">All</option>
+            <option value="">All</option>
             @foreach ($categories as $category)
                 <option value="{{ $category['id'] }}">{{ $category->name }}</option>
             @endforeach
@@ -234,6 +234,7 @@
                         'category': category
                     },
                     success: function(data) {
+                        console.log(data)
                         var categories = data.categories;
                         var res = '';
                         var j = 1;
@@ -244,7 +245,8 @@
                                         <td>' + categories[i]['book_name'] + '</td>\
                                         <td>' + categories[i]['category_name'] + '</td>\
                                         @if (count($books) > 0)\
-                                        <td><form action="{{ route('books.destroy', $book->id) }}" method="Post"> <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>\
+                                        <td><form action="{{ route('books.destroy', $book->id) }}" method="Post">\
+                                        <a class="green" href="{{ route('books.edit', $book->id) }}"> Edit </a>\
                                          @csrf\
                                          @method('DELETE')\
                                         <button type="submit" class="red" onclick="confirmation(event)">Delete</button>\

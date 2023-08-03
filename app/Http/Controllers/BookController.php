@@ -11,16 +11,9 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        if (auth()->user()) {
-
-            $books = Books::orderBy('id', 'asc')->where('user_id', auth()->user()->id)->get();
-            $categories = Category::orderBy('id', 'asc')->get();
-
-            return view('books', compact('categories', 'books'));
-        
-        } else {
-            return redirect()->route('login');
-        }
+        $books = Books::where('user_id', auth()->user()->id)->get();
+        $categories = Category::orderBy('id', 'asc')->get();
+        return view('books', compact('categories', 'books'));
     }
 
     public function create()
@@ -36,7 +29,8 @@ class BookController extends Controller
             'name' => $request->name,
             'category_id' => $request->category,
         ]);
-        return redirect()->route('books.index')->with('success', 'Book has been created successfully');
+        return redirect()->route('books.index')
+            ->with('success', 'Book has been created successfully');
 
     }
 
@@ -59,41 +53,40 @@ class BookController extends Controller
             'category_id' => $request->category,
         ]);
 
-        return redirect()->route('books.index')->with('update', 'Book Has Been updated successfully');
+        return redirect()->route('books.index')
+            ->with('update', 'Book Has Been updated successfully');
     }
 
     public function destroy(Books $book)
     {
 
         $book->delete();
-        return redirect()->route('books.index')->with('success', 'Book has been deleted successfully');
+        return redirect()->route('books.index')
+            ->with('success', 'Book has been deleted successfully');
     }
 
     public function CategoryFilter(Request $request)
     {
-
         $book = Books::query();
         $category = Category::query();
 
         if ($request->ajax()) {
 
-            if ($request->category == "Null") {
-                $books = $book->where('user_id', auth()->user()->id)->get();
-                $categories = $book
+            $books = $book->when($request->category != "", function ($book) use ($request) {
+                return $book
+                    ->where('user_id', auth()->user()->id)
+                    ->where('category_id', $request->category)
                     ->join('categories', 'books.category_id', '=', 'categories.id')
                     ->select('books.name as book_name', 'categories.name as category_name')
                     ->get();
-
-                return response()->json(['categories' => $categories]);
-            } else {
-                $books = $book->where('user_id', auth()->user()->id)->where(['category_id' => $request->category])->get();
-                $categories = $book
+            }, function ($book) {
+                return $book
+                    ->where('user_id', auth()->user()->id)
                     ->join('categories', 'books.category_id', '=', 'categories.id')
                     ->select('books.name as book_name', 'categories.name as category_name')
                     ->get();
-
-                return response()->json(['categories' => $categories]);
-            }
+            });
+            return response()->json(['categories' => $books]);
 
         } else {
             $books = $book->where('user_id', auth()->user()->id)->get();
