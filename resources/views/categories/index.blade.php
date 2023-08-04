@@ -3,6 +3,10 @@
 <head>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="sweetalert2.all.min.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+  crossorigin="anonymous"></script>
 
     <style>
         * {
@@ -127,10 +131,7 @@
         }
 
         select {
-            height: 35px;
-            width: 220px;
-            float: right;
-            margin-bottom:10px;
+            margin-bottom:4px;
         }
 
         ul {
@@ -166,10 +167,10 @@
         <h1>Categories</h1>
     </div>
     <div class="table-wrap">
-        <table>
+        <table id="categorytable">
             <thead>
                 <th>
-                    <h3>ID</h3>
+                    <h3>Sr No</h3>
                 </th>
                 <th>
                     <h3>Category Name</h3>
@@ -185,7 +186,7 @@
             <tbody>
                 @foreach ($categories as $category)
                     <tr>
-                        <td>{{ $category['id'] }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $category['name'] }}</td>
                         <td>{{$category->books->count()}}</td>
                         <td>
@@ -210,7 +211,10 @@
 
 </body>
 
+<script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
+
+let table = new DataTable('#categorytable');
 
 @if(session()->has('success'))
 Swal.fire({

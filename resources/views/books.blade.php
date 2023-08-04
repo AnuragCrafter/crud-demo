@@ -55,7 +55,7 @@
         th {
             border: 1px solid #ddd;
             text-align: center;
-            font-size: 16px;
+            font-size: 15px;
             text-transform: capitalize;
             align-items: center;
         }
@@ -131,13 +131,27 @@
             border: 5px;
             background: none;
         }
+        .Select {
+            display:flex;
+            align-items:center;
+            margin-bottom:3px;
+        }
 
         .SelectCategory {
-            height: 30px;
-            width: 155px;
+            height: 26px;
+            width: 5px;
             float: right;
-            margin-bottom: 5px;
+            flex:0.24;
+            text-align:center;
+            
         }
+
+        .abc {
+            text-align:right;
+            flex:1;
+        }
+
+        
 
         ul {
             display: flex;
@@ -170,18 +184,19 @@
     </div>
 
 
-    <div class="box-wrap">
+    <div class="box-wrap ">
         <h1>Books Records</h1>
     </div>
 
-    <div class="table-wrap">
-        
-        <select name="category" id="category" class="SelectCategory">
+    <div class="table-wrap ">
+    <div class="Select">
+       <div class="abc">category: </div> 
+       <select name="category" id="category" class="SelectCategory">
             <option value="">All</option>
             @foreach ($categories as $category)
                 <option value="{{ $category['id'] }}">{{ $category->name }}</option>
             @endforeach
-        </select>
+        </select></div>
 
         <table id="myTable">
             <thead>

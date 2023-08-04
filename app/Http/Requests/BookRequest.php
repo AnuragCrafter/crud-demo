@@ -22,7 +22,8 @@ class BookRequest extends FormRequest
                     Rule::unique('books','name','NULL')
                           ->where('user_id',auth()->user()->id)
                           ->ignore($this->book),
-                    'regex:/[a-zA-Z0-9\s]+/'
+                    'regex:/[a-zA-Z0-9\s]+/',
+                    'not_regex:/[<>+$+%+^+&+"]/'
                 ],
                 'category' => 'required',
             ];
