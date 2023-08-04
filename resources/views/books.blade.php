@@ -4,6 +4,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="sweetalert2.all.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script
+  src="https://code.jquery.com/jquery-3.7.0.min.js"
+  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+  crossorigin="anonymous"></script>
 
     <style>
         * {
@@ -50,7 +55,7 @@
         th {
             border: 1px solid #ddd;
             text-align: center;
-            font-size: 15px;
+            font-size: 16px;
             text-transform: capitalize;
             align-items: center;
         }
@@ -58,6 +63,8 @@
         th {
             background: #000000d6;
             color: #fff;
+            text-align: center;
+            align-items: center;
         }
 
         table {
@@ -67,7 +74,7 @@
 
         th,
         td {
-            padding: 0px;
+            
             white-space: nowrap;
         }
 
@@ -125,11 +132,11 @@
             background: none;
         }
 
-        select {
-            height: 35px;
-            width: 220px;
+        .SelectCategory {
+            height: 30px;
+            width: 155px;
             float: right;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         ul {
@@ -168,15 +175,15 @@
     </div>
 
     <div class="table-wrap">
-
-        <select name="category" id="category">
+        
+        <select name="category" id="category" class="SelectCategory">
             <option value="">All</option>
             @foreach ($categories as $category)
                 <option value="{{ $category['id'] }}">{{ $category->name }}</option>
             @endforeach
         </select>
 
-        <table>
+        <table id="myTable">
             <thead>
                 <th>
                     <h3>Sr no</h3>
@@ -222,8 +229,10 @@
     </div>
     </div>
     </div>
-
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    
     <script>
+        let table = new DataTable('#myTable');
         $(document).ready(function() {
             $("#category").on('change', function() {
                 var category = $(this).val();
@@ -312,6 +321,8 @@
             });
         @endif
     </script>
+    
+    
 </body>
 
 </html>
