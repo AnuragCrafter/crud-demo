@@ -4,9 +4,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="sweetalert2.all.min.js"></script>
 <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"
   integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
   crossorigin="anonymous"></script>
+<script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <style>
         * {
@@ -79,6 +80,10 @@
             color: #000;
             font-weight: 500;
         }
+
+        table.dataTable tbody td {
+    padding: 0px 0px;
+}
 
         .box-wrap {
             padding: 0px 16px;
@@ -183,24 +188,6 @@
                 </th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($categories as $category)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $category['name'] }}</td>
-                        <td>{{$category->books->count()}}</td>
-                        <td>
-                            <form action="{{ route('categories.destroy',$category->id) }}" method="Post" >
-                            
-                                <a class="green" href="{{route('categories.edit',$category->id)}}">Edit</a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="red" onclick="confirmation(event)"> Delete </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
         </table>
     </div>
     </div>
@@ -211,10 +198,28 @@
 
 </body>
 
-<script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
 
-let table = new DataTable('#categorytable');
+$(document).ready(function () {
+    
+         $('#categorytable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('CategoryDataTable') }}",
+        columns: [
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'name', name: 'name'},
+            {data: 'books_count', name: 'books_count'},
+            {
+                data: 'action', 
+                name: 'action', 
+                orderable: false, 
+                searchable: true,
+            },
+        ]
+    });    
+  });
+
 
 @if(session()->has('success'))
 Swal.fire({

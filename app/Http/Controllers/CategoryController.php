@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class CategoryController extends Controller
 {
@@ -59,4 +60,26 @@ class CategoryController extends Controller
         $category->delete();
         return redirect()->route('categories.index')->with('delete', 'category has been deleted successfully');
     }
+
+    public function CategoryDataTable(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = Category::orderBy('id', 'asc')->withCount('books')->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($data){
+                    $actionBtn = '<form action="' .route('categories.destroy',$data->id) .'" method="Post" >
+                    <a href="' . route('categories.edit', $data->id).'" class="green">Edit</a>                    
+                    '.csrf_field().'
+                    '.method_field("DELETE").'
+                    <button type="submit" class="red" onclick="confirmation(event)"> Delete </button>
+                    </form>
+                    ';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+    }
+
+}
 }

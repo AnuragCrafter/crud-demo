@@ -4,11 +4,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="sweetalert2.all.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <link rel="stylesheet" href="//cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script
-  src="https://code.jquery.com/jquery-3.7.0.min.js"
-  integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
-  crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+
+
 
     <style>
         * {
@@ -74,7 +77,7 @@
 
         th,
         td {
-            
+
             white-space: nowrap;
         }
 
@@ -82,6 +85,10 @@
             background: #d9dcde;
             color: #000;
             font-weight: 500;
+        }
+
+        table.dataTable tbody td {
+            padding: 2px 0px;
         }
 
         .box-wrap {
@@ -131,27 +138,28 @@
             border: 5px;
             background: none;
         }
+
         .Select {
-            display:flex;
-            align-items:center;
-            margin-bottom:3px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
         }
 
         .SelectCategory {
             height: 26px;
             width: 5px;
             float: right;
-            flex:0.24;
-            text-align:center;
-            
+            flex: 0.24;
+            text-align: center;
+
         }
 
         .abc {
-            text-align:right;
-            flex:1;
+            text-align: right;
+            flex: 1;
         }
 
-        
+
 
         ul {
             display: flex;
@@ -160,6 +168,9 @@
 
 
     <title>View Books Records</title>
+
+
+
 </head>
 
 <body>
@@ -189,14 +200,15 @@
     </div>
 
     <div class="table-wrap ">
-    <div class="Select">
-       <div class="abc">category: </div> 
-       <select name="category" id="category" class="SelectCategory">
-            <option value="">All</option>
-            @foreach ($categories as $category)
-                <option value="{{ $category['id'] }}">{{ $category->name }}</option>
-            @endforeach
-        </select></div>
+        <div class="Select">
+            <div class="abc">Category: </div>
+            <select name="category" id="category" class="SelectCategory">
+                <option value="">All</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category['id'] }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </div>
 
         <table id="myTable">
             <thead>
@@ -215,28 +227,8 @@
                 </tr>
             </thead>
             <tbody id="tbody">
-
                 @foreach ($books as $book)
-                
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $book['name'] }}</td>
-                        <td>
-                            {{ $book->category->name }}
-                        </td>
-                        <td>
-
-                            <form action="{{ route('books.destroy', $book->id) }}" method="Post">
-
-                                <a class="green" href="{{ route('books.edit', $book->id) }}">Edit</a>
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="red" onclick="confirmation(event)">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
                 @endforeach
-
             </tbody>
         </table>
     </div>
@@ -244,27 +236,56 @@
     </div>
     </div>
     </div>
-    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+
+        $('#myTable').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('datatable') }}",
+            columns: [{
+                    data: 'DT_RowIndex',
+                    name: 'DT_RowIndex'
+                },
+                {
+                    data: 'book_name',
+                    name: 'book_name'
+                },
+                {
+                    data: 'category_name',
+                    name: 'category_name'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: true,
+                },
+            ]
+        });
+    });
     
-    <script>
-        let table = new DataTable('#myTable');
-        $(document).ready(function() {
-            $("#category").on('change', function() {
-                var category = $(this).val();
-                $.ajax({
-                    url: "{{ route('CategoryFilter') }}",
-                    type: "GET",
-                    data: {
-                        'category': category
-                    },
-                    success: function(data) {
-                        console.log(data)
-                        var categories = data.categories;
-                        var res = '';
-                        var j = 1;
-                        for (let i = 0; i < categories.length; i++) {
-                            var j=i+1;
-                            res += '<tr>\
+
+    $(document).ready(function() {
+        $("#category").on('change', function() {
+            var category = $(this).val();
+            $.ajax({
+                url: "{{ route('CategoryFilter') }}",
+                type: "GET",
+                data: {
+                    'category': category
+                },
+                success: function(data) {
+                    console.log(data)
+                    var categories = data.categories;
+                    var res = '';
+                    var j = 1;
+                    for (let i = 0; i < categories.length; i++) {
+                        var j = i + 1;
+                        res += '<tr>\
                                         <td>' + j + '</td>\
                                         <td>' + categories[i]['book_name'] + '</td>\
                                         <td>' + categories[i]['category_name'] + '</td>\
@@ -278,66 +299,82 @@
                                     </form>\
                                 </td>\
                                     </tr>';
-                        }
-                        $("#tbody").html(res);
                     }
-                });
-            })
-        })
-
-
-        @if (session()->has('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Book saved successfully.',
-            });
-        @endif
-
-        @if (session()->has('update'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Book name updated successfully.',
-            });
-        @endif
-
-        function confirmation(ev) {
-            ev.preventDefault();
-            var form = event.target.form;
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'delete!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                } else if (
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    swal.fire(
-                        'Cancelled',
-                        'Your Book is safe.',
-                        'error'
-                    )
+                    $("#tbody").html(res);
                 }
-            })
-        }
-        @if (session()->has('delete'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Book Deleted successfully.',
             });
-        @endif
-    </script>
-    
-    
-</body>
+        })
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @if (session()->has('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Book saved successfully.',
+        });
+    @endif
+
+    @if (session()->has('update'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Book name updated successfully.',
+        });
+    @endif
+
+    function confirmation(ev) {
+        ev.preventDefault();
+        var form = event.target.form;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'delete!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swal.fire(
+                    'Cancelled',
+                    'Your Book is safe.',
+                    'error'
+                )
+            }
+        })
+    }
+    @if (session()->has('delete'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Book Deleted successfully.',
+        });
+    @endif
+</script>
+
+
+
 
 </html>

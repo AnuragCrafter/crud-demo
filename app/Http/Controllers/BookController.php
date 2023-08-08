@@ -6,6 +6,7 @@ use App\Http\Requests\BookRequest;
 use App\Models\Books;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 
 class BookController extends Controller
 {
@@ -13,6 +14,7 @@ class BookController extends Controller
     {
         $books = Books::where('user_id', auth()->user()->id)->get();
         $categories = Category::orderBy('id', 'asc')->get();
+
         return view('books', compact('categories', 'books'));
     }
 
@@ -62,22 +64,23 @@ class BookController extends Controller
 
         $book->delete();
         return redirect()->route('books.index')
-            ->with('success', 'Book has been deleted successfully');
+            ->with('delete', 'Book has been deleted successfully');
     }
 
     public function CategoryFilter(Request $request)
     {
+        
         $book = Books::query();
         $category = Category::query();
 
         if ($request->ajax()) {
-
+            
             $books = $book->when($request->category != "", function ($book) use ($request) {
                 return $book
                     ->where('user_id', auth()->user()->id)
                     ->where('category_id', $request->category)
                     ->join('categories', 'books.category_id', '=', 'categories.id')
-                    ->select('books.name as book_name', 'categories.name as category_name')
+                    ->select('books.name as book_name', 'categories.name as category_name', 'books.id as id')
                     ->get();
             }, function ($book) {
                 return $book
@@ -95,5 +98,40 @@ class BookController extends Controller
         $books = $book->get();
         $categories = $category->get();
         return view('books', compact('categories', 'books'));
+    }
+
+    public function datatable(Request $request)
+    {
+
+
+
+
+
+
+        if ($request->ajax()) 
+        {
+            $data = Books::select('id', 'name', 'category_name')
+                ->where('user_id', auth()->user()->id)
+                ->join('categories', 'books.category_id', '=', 'categories.id')
+                ->select('books.name as book_name', 'categories.name as category_name', 'books.id as id')
+                ->get();
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function ($data) 
+                {
+                    $actionBtn = '<form action="' . route('books.destroy', $data->id) . '" method="POST">
+                    <a href="' . route('books.edit', $data->id) . '" class="green" style="">Edit</a>
+                    ' . csrf_field() . '
+                    ' . method_field("DELETE") . '
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button type="submit" class="red " onclick="confirmation(event)">Delete</button>';
+
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+
+        }
     }
 }

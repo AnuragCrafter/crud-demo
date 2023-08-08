@@ -34,8 +34,11 @@ Route::middleware('auth')->group(function () {
 require __DIR__ . '/auth.php';
 
 Route::get('/books/CategoryFilter', [BookController::class, 'CategoryFilter'])->name('CategoryFilter');
+Route::get('/books/datatable', [BookController::class, 'datatable'])->name('datatable');
 Route::resource('books', BookController::class)->middleware(['auth', 'verified']);
 
+
+Route::get('/categories/datatable', [CategoryController::class, 'CategoryDataTable'])->name('CategoryDataTable');
 Route::resource('categories', CategoryController::class)->middleware(['auth', 'verified']);
 
 
