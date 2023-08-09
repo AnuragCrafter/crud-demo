@@ -226,10 +226,6 @@
                 </th>
                 </tr>
             </thead>
-            <tbody id="tbody">
-                @foreach ($books as $book)
-                @endforeach
-            </tbody>
         </table>
     </div>
     </div>
@@ -245,6 +241,7 @@
         $('#myTable').DataTable({
             processing: true,
             serverSide: true,
+            destroy: true,
             ajax: "{{ route('datatable') }}",
             columns: [{
                     data: 'DT_RowIndex',
@@ -266,63 +263,41 @@
                 },
             ]
         });
-    });
-    
 
-    $(document).ready(function() {
         $("#category").on('change', function() {
             var category = $(this).val();
-            $.ajax({
-                url: "{{ route('CategoryFilter') }}",
-                type: "GET",
-                data: {
-                    'category': category
+            $('#myTable').DataTable({
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    "url": "{{ route('datatable') }}",
+                    "data": {
+                        'category': category
+                    },
                 },
-                success: function(data) {
-                    console.log(data)
-                    var categories = data.categories;
-                    var res = '';
-                    var j = 1;
-                    for (let i = 0; i < categories.length; i++) {
-                        var j = i + 1;
-                        res += '<tr>\
-                                        <td>' + j + '</td>\
-                                        <td>' + categories[i]['book_name'] + '</td>\
-                                        <td>' + categories[i]['category_name'] + '</td>\
-                                        @if (count($books) > 0)\
-                                        <td><form action="{{ route('books.destroy', $book->id) }}" method="Post">\
-                                        <a class="green" href="{{ route('books.edit', $book->id) }}"> Edit </a>\
-                                         @csrf\
-                                         @method('DELETE')\
-                                        <button type="submit" class="red" onclick="confirmation(event)">Delete</button>\
-                                        @endif\
-                                    </form>\
-                                </td>\
-                                    </tr>';
-                    }
-                    $("#tbody").html(res);
-                }
+                columns: [{
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex'
+                    },
+                    {
+                        data: 'book_name',
+                        name: 'book_name'
+                    },
+                    {
+                        data: 'category_name',
+                        name: 'category_name'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: true,
+                    },
+                ]
             });
         })
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @if (session()->has('success'))
         Swal.fire({
@@ -373,8 +348,5 @@
         });
     @endif
 </script>
-
-
-
 
 </html>
